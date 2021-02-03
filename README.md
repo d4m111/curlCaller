@@ -1,5 +1,6 @@
 # curlCaller
 
+
 # settings
 CurlCaller::$settings['queryTimeout'] = 20;
 

@@ -22,6 +22,7 @@ abstract class CurlCaller {
         'queryTimeout'      => 30, // seg
         'verbose'           => false,
         'basicAuth'         => [],
+        'extraHeaders'      => []
     ];
 
 	private static function call($url, $metodo, $params){
@@ -64,6 +65,8 @@ abstract class CurlCaller {
         if(self::$settings['acceptCharset']) $headersList[] = "Accept-Charset: ".self::$settings['acceptCharset'];
         if(self::$settings['userAgent']) $headersList[] = "User-Agent: ".self::$settings['userAgent'];
         if(self::$settings['contentType']) $headersList[] = "Content-Type: ".self::$settings['contentType'];
+
+        $headersList += self::$settings['extraHeaders'];
         
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headersList);
 
@@ -92,23 +95,23 @@ abstract class CurlCaller {
         return (self::$settings['contentType'] == 'application/json') ? @json_decode(self::$curlResponse,true) : self::$curlResponse;    
     }
 
-    public static function get($url,$params = null){
+    public static function get($url, $params = null){
         return self::call($url, 'GET', $params);
     }
 
-    public static function post($url,$params = null){
+    public static function post($url, $params = null){
         return self::call($url, 'POST', $params);
     }
 
-    public static function put($url,$params = null){
+    public static function put($url, $params = null){
         return self::call($url, 'PUT', $params);
     }
 
-    public static function patch($url,$params = null){
+    public static function patch($url, $params = null){
         return self::call($url, 'PATCH', $params);
     }
 
-    public static function delete($url,$params = null){
+    public static function delete($url, $params = null){
         return self::call($url, 'DELETE', $params);
     }
 }

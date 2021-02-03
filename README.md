@@ -5,7 +5,7 @@ CurlCaller::$settings['queryTimeout'] = 20;
 
 CurlCaller::$settings['basicAuth'] = ['user','pass'];
 
-CurlCaller::$settings['extraHeaders'] = ['customheader: info', 'Authorization: Bearer 12345678'];
+CurlCaller::$settings['headers'] = ['customheader: info', 'Authorization: Bearer 12345678'];
 
 # parms
 $response = CurlCaller::get('url/endpoint', ['page' => 1]);

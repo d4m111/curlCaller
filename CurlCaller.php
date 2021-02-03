@@ -22,7 +22,7 @@ abstract class CurlCaller {
         'queryTimeout'      => 30, // seg
         'verbose'           => false,
         'basicAuth'         => [],
-        'extraHeaders'      => []
+        'headers'           => []
     ];
 
 	private static function call($url, $metodo, $params){
@@ -66,7 +66,7 @@ abstract class CurlCaller {
         if(self::$settings['userAgent']) $headersList[] = "User-Agent: ".self::$settings['userAgent'];
         if(self::$settings['contentType']) $headersList[] = "Content-Type: ".self::$settings['contentType'];
 
-        $headersList += self::$settings['extraHeaders'];
+        $headersList += self::$settings['headers'];
         
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headersList);
 

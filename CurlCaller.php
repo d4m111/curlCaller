@@ -88,7 +88,7 @@ abstract class CurlCaller {
             throw new Exception("CURL ERROR [URL: $url METODO: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
         }
         
-        if($httpcode >= 400 || $httpcode == 0){		
+        if($httpcode >= 300 || $httpcode == 0){		
             throw new Exception("HTTP ERROR [URL: $url METODO: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
         }
 

@@ -3,7 +3,7 @@
 /**
 *
 * @author Damián Curcio
-* @version 1.2
+* @version 1.3
 *
 **/
 
@@ -53,7 +53,7 @@ abstract class CurlCaller {
             }
         }else{
             
-            // si es un json va al body
+            // si es un json va al body como texto
 
             self::$settings['contentType'] = (!self::$settings['contentType']) ? 'application/json' : self::$settings['contentType'];
 
@@ -92,7 +92,8 @@ abstract class CurlCaller {
             throw new Exception("HTTP ERROR [URL: $url METODO: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
         }
 
-        return (self::$settings['contentType'] == 'application/json') ? @json_decode(self::$curlResponse,true) : self::$curlResponse;    
+        // return (self::$settings['contentType'] == 'application/json') ? @json_decode(self::$curlResponse,true) : self::$curlResponse;
+        return self::$curlResponse;    
     }
 
     public static function get($url, $params = null){

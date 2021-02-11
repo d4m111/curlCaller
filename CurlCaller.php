@@ -3,7 +3,7 @@
 /**
 *
 * @author Damián Curcio
-* @version 1.4
+* @version 1.5
 *
 **/
 
@@ -13,6 +13,7 @@ abstract class CurlCaller {
     private static $curlResponse;
     private static $settings = [
         'url'               => '',
+        'json'              => false,
         'acceptCharset'     => 'UTF-8',
         'contentType'       => '', // application/json | application/x-www-form-urlencoded | multipart/form-data
         'userAgent'         => '',
@@ -54,19 +55,23 @@ abstract class CurlCaller {
             CURLOPT_VERBOSE => self::$settings['verbose'],
         ));
 
-        if(is_array($params)){
+        if(self::$settings['json'] !== true && is_array($params)){
+
             if(strtoupper($metodo) == 'POST'){
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
             }else if($params){
                 curl_setopt($ch, CURLOPT_URL, $url.'?'.http_build_query($params));
             }
-        }else{
-            
-            // si es un json va al body como texto
+
+        }else if((self::$settings['json'] === true) && is_array($params)){
 
             self::$settings['contentType'] = (!self::$settings['contentType']) ? 'application/json' : self::$settings['contentType'];
+            curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
+
+        }else{
 
             curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
+
         }
 
         $headersList = [];
@@ -101,8 +106,7 @@ abstract class CurlCaller {
             throw new Exception("HTTP ERROR [URL: $url METODO: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
         }
 
-        // return (self::$settings['contentType'] == 'application/json') ? @json_decode(self::$curlResponse,true) : self::$curlResponse;
-        return self::$curlResponse;    
+        return (self::$settings['json'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse; 
     }
 
     public static function getLastError(){

@@ -8,10 +8,10 @@
 **/
 
 abstract class CurlCaller {
-    public static $curlError;
-    public static $curlInfo;
-    public static $curlResponse;
-    public static $settings = [
+    private static $curlError;
+    private static $curlInfo;
+    private static $curlResponse;
+    private static $settings = [
         'acceptCharset'     => 'UTF-8',
         'contentType'       => '', // application/json | application/x-www-form-urlencoded | multipart/form-data
         'userAgent'         => '',
@@ -24,6 +24,12 @@ abstract class CurlCaller {
         'basicAuth'         => [],
         'headers'           => []
     ];
+
+    public static function setSettings(array $settings){
+        foreach($settings as $k=>$v){
+            self::$settings[$k] = $v;
+        }
+    }
 
 	private static function call($url, $metodo, $params){
         if(!$url || !$metodo) throw new Exception("[".__METHOD__."] Parametros Incorrectos");
@@ -94,6 +100,14 @@ abstract class CurlCaller {
 
         // return (self::$settings['contentType'] == 'application/json') ? @json_decode(self::$curlResponse,true) : self::$curlResponse;
         return self::$curlResponse;    
+    }
+
+    public static function getLastError(){
+        return self::$curlError;
+    }
+
+    public static function getLastCurlInfo(){
+        return self::$curlInfo;
     }
 
     public static function get($url, $params = null){

@@ -12,6 +12,7 @@ abstract class CurlCaller {
     private static $curlInfo;
     private static $curlResponse;
     private static $settings = [
+        'url'               => '',
         'acceptCharset'     => 'UTF-8',
         'contentType'       => '', // application/json | application/x-www-form-urlencoded | multipart/form-data
         'userAgent'         => '',
@@ -31,7 +32,9 @@ abstract class CurlCaller {
         }
     }
 
-	private static function call($url, $metodo, $params){
+	private static function call($path, $metodo, $params){
+        $url = self::$settings['url'].$path;
+        
         if(!$url || !$metodo) throw new Exception("[".__METHOD__."] Parametros Incorrectos");
         
         self::$curlError = "";

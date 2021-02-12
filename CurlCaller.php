@@ -34,7 +34,7 @@ abstract class CurlCaller {
         }
     }
 
-	private static function call($path, $metodo, $params){
+	public static function call($path, $metodo, $params){
         $url = self::$settings['url'].$path;
         
         if(!$url || !$metodo) throw new Exception("[".__METHOD__."] Parametros Incorrectos");
@@ -66,13 +66,16 @@ abstract class CurlCaller {
 
         }else if((self::$settings['paramJson'] === true) && is_array($params)){
 
-            self::$settings['contentType'] = (!self::$settings['contentType']) ? 'application/json' : self::$settings['contentType'];
             curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
 
         }else{
 
             curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
 
+        }
+
+        if(self::$settings['responseJsonToArray'] === true){
+            self::$settings['contentType'] = (!self::$settings['contentType']) ? 'application/json' : self::$settings['contentType'];
         }
 
         $headersList = [];
@@ -95,22 +98,23 @@ abstract class CurlCaller {
         self::$curlError = curl_error($ch);
         self::$curlInfo = curl_getinfo($ch);
         
-        $httpcode = self::$curlInfo['http_code'];
+        $httpCode = self::$curlInfo['http_code'];
 
         curl_close($ch);
 
         if(self::$curlError){		
-            throw new Exception("CURL ERROR [URL: $url METHOD: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
+            throw new Exception("CURL ERROR [URL: $url METHOD: $metodo CODE: $httpCode ERROR: ".self::$curlError."]");
         }
         
-        if($httpcode >= 300 || $httpcode == 0){		
-            throw new Exception("HTTP ERROR [URL: $url METHOD: $metodo CODE: $httpcode RESP: ".self::$curlResponse."]");
-        }
-
-        return (self::$settings['responseJsonToArray'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse; 
+        return [
+            'url' => $url,
+            'httpCode' => $httpCode,
+            'responseType' => ($httpCode < 300) ? 'success' : 'success',
+            'response' => (self::$settings['responseJsonToArray'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse        
+        ]; 
     }
 
-    public static function getLastError(){
+    public static function getLastCurlError(){
         return self::$curlError;
     }
 
@@ -119,22 +123,47 @@ abstract class CurlCaller {
     }
 
     public static function get($url, $params = null){
-        return self::call($url, 'GET', $params);
+        
+        $r = self::call($url, 'GET', $params);
+
+        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: GET CODE: {$r['httpCode']} RESP: {$r['response']}]");
+
+        return $r['response'];
     }
 
     public static function post($url, $params = null){
-        return self::call($url, 'POST', $params);
+
+        $r = self::call($url, 'POST', $params);
+
+        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: POST CODE: {$r['httpCode']} RESP: {$r['response']}]");
+
+        return $r['response'];
     }
 
     public static function put($url, $params = null){
-        return self::call($url, 'PUT', $params);
+
+        $r = self::call($url, 'PUT', $params);
+
+        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PUT CODE: {$r['httpCode']} RESP: {$r['response']}]");
+
+        return $r['response'];
     }
 
     public static function patch($url, $params = null){
-        return self::call($url, 'PATCH', $params);
+
+        $r = self::call($url, 'PATCH', $params);
+
+        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PATCH CODE: {$r['httpCode']} RESP: {$r['response']}]");
+
+        return $r['response'];
     }
 
     public static function delete($url, $params = null){
-        return self::call($url, 'DELETE', $params);
+
+        $r = self::call($url, 'DELETE', $params);
+
+        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: DELETE CODE: {$r['httpCode']} RESP: {$r['response']}]");
+
+        return $r['response'];
     }
 }

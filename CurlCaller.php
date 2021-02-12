@@ -34,7 +34,7 @@ abstract class CurlCaller {
         }
     }
 
-	public static function call($path, $metodo, $params){
+	public static function call(string $path, string $metodo, $params = null){
         $url = self::$settings['url'].$path;
         
         if(!$url || !$metodo) throw new Exception("[".__METHOD__."] Parametros Incorrectos");
@@ -68,7 +68,7 @@ abstract class CurlCaller {
 
             curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
 
-        }else{
+        }else if($params){
 
             curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
 
@@ -122,7 +122,7 @@ abstract class CurlCaller {
         return self::$curlInfo;
     }
 
-    public static function get($url, $params = null){
+    public static function get(string $url, $params = null){
         
         $r = self::call($url, 'GET', $params);
 
@@ -131,7 +131,7 @@ abstract class CurlCaller {
         return $r['response'];
     }
 
-    public static function post($url, $params = null){
+    public static function post(string $url, $params = null){
 
         $r = self::call($url, 'POST', $params);
 
@@ -140,7 +140,7 @@ abstract class CurlCaller {
         return $r['response'];
     }
 
-    public static function put($url, $params = null){
+    public static function put(string $url, $params = null){
 
         $r = self::call($url, 'PUT', $params);
 
@@ -149,7 +149,7 @@ abstract class CurlCaller {
         return $r['response'];
     }
 
-    public static function patch($url, $params = null){
+    public static function patch(string $url, $params = null){
 
         $r = self::call($url, 'PATCH', $params);
 
@@ -158,7 +158,7 @@ abstract class CurlCaller {
         return $r['response'];
     }
 
-    public static function delete($url, $params = null){
+    public static function delete(string $url, $params = null){
 
         $r = self::call($url, 'DELETE', $params);
 

@@ -109,7 +109,7 @@ abstract class CurlCaller {
         return [
             'url' => $url,
             'httpCode' => $httpCode,
-            'responseType' => ($httpCode < 300) ? 'success' : 'success',
+            'responseType' => ($httpCode < 300) ? 'success' : 'error',
             'response' => (self::$settings['responseJsonToArray'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse        
         ]; 
     }

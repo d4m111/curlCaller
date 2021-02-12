@@ -59,9 +59,9 @@ abstract class CurlCaller {
         if(self::$settings['paramJson'] !== true && is_array($params)){
 
             if(strtoupper($metodo) == 'POST'){
-                curl_setopt($ch, CURLOPT_POSTFIELDS, rawurldecode(http_build_query($params)));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
             }else if($params){
-                curl_setopt($ch, CURLOPT_URL, $url.'?'.rawurldecode(http_build_query($params)));
+                curl_setopt($ch, CURLOPT_URL, $url.'?'.http_build_query($params)); // rawurldecode(http_build_query($params))
             }
 
         }else if((self::$settings['paramJson'] === true) && is_array($params)){

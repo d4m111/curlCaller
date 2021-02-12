@@ -14,7 +14,7 @@ abstract class CurlCaller {
     private static $settings = [
         'url'                   => '',
         'paramJson'             => false,
-        'responseParseArray'    => false,
+        'responseJsonToArray'   => false,
         'acceptCharset'         => 'UTF-8',
         'contentType'           => '', // application/json | application/x-www-form-urlencoded | multipart/form-data
         'userAgent'             => '',
@@ -107,7 +107,7 @@ abstract class CurlCaller {
             throw new Exception("HTTP ERROR [URL: $url METHOD: $metodo CODE: $httpcode RESP: ".self::$curlResponse."]");
         }
 
-        return (self::$settings['responseParseArray'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse; 
+        return (self::$settings['responseJsonToArray'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse; 
     }
 
     public static function getLastError(){

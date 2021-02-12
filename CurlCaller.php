@@ -12,20 +12,20 @@ abstract class CurlCaller {
     private static $curlInfo;
     private static $curlResponse;
     private static $settings = [
-        'url'               => '',
-        'paramJson'         => false,
-        'responseParseJson' => false,
-        'acceptCharset'     => 'UTF-8',
-        'contentType'       => '', // application/json | application/x-www-form-urlencoded | multipart/form-data
-        'userAgent'         => '',
-        'returnTransfer'    => true,
-        'sslVerifypeer'     => false,
-        'sslVerifyhost'     => false,
-        'connectTimeout'    => 3, // seg
-        'queryTimeout'      => 30, // seg
-        'verbose'           => false,
-        'basicAuth'         => [],
-        'headers'           => []
+        'url'                   => '',
+        'paramJson'             => false,
+        'responseParseArray'    => false,
+        'acceptCharset'         => 'UTF-8',
+        'contentType'           => '', // application/json | application/x-www-form-urlencoded | multipart/form-data
+        'userAgent'             => '',
+        'returnTransfer'        => true,
+        'sslVerifypeer'         => false,
+        'sslVerifyhost'         => false,
+        'connectTimeout'        => 3, // seg
+        'queryTimeout'          => 30, // seg
+        'verbose'               => false,
+        'basicAuth'             => [],
+        'headers'               => []
     ];
 
     public static function setSettings(array $settings){
@@ -107,7 +107,7 @@ abstract class CurlCaller {
             throw new Exception("HTTP ERROR [URL: $url METODO: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
         }
 
-        return (self::$settings['responseParseJson'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse; 
+        return (self::$settings['responseParseArray'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse; 
     }
 
     public static function getLastError(){

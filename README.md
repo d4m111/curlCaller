@@ -8,7 +8,7 @@
         // paramJson' => true,
         'responseJsonToArray' => true,
         'userAgent' => 'user-agent', 
-        'basicAuth' => ['user','pass'],
+        'basicAuth' => ['user' => 'user', 'password' => 'pass'],
         'headers' => [
             'customheader: info', 'Authorization: Bearer 12345678'
         ]

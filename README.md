@@ -10,7 +10,7 @@
         'userAgent' => 'user-agent', 
         'basicAuth' => ['user' => 'user', 'password' => 'pass'],
         'headers' => [
-            'customheader: info', 'Authorization: Bearer 12345678'
+            // 'customheader: info', 'Authorization: Bearer 12345678'
         ]
     ]);
 

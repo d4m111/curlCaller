@@ -13,7 +13,8 @@ abstract class CurlCaller {
     private static $curlResponse;
     private static $settings = [
         'url'               => '',
-        'json'              => false,
+        'paramJson'         => false,
+        'responseParseJson' => false,
         'acceptCharset'     => 'UTF-8',
         'contentType'       => '', // application/json | application/x-www-form-urlencoded | multipart/form-data
         'userAgent'         => '',
@@ -55,15 +56,15 @@ abstract class CurlCaller {
             CURLOPT_VERBOSE => self::$settings['verbose'],
         ));
 
-        if(self::$settings['json'] !== true && is_array($params)){
+        if(self::$settings['paramJson'] !== true && is_array($params)){
 
             if(strtoupper($metodo) == 'POST'){
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, rawurldecode(http_build_query($params)));
             }else if($params){
-                curl_setopt($ch, CURLOPT_URL, $url.'?'.http_build_query($params));
+                curl_setopt($ch, CURLOPT_URL, $url.'?'.rawurldecode(http_build_query($params)));
             }
 
-        }else if((self::$settings['json'] === true) && is_array($params)){
+        }else if((self::$settings['paramJson'] === true) && is_array($params)){
 
             self::$settings['contentType'] = (!self::$settings['contentType']) ? 'application/json' : self::$settings['contentType'];
             curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
@@ -106,7 +107,7 @@ abstract class CurlCaller {
             throw new Exception("HTTP ERROR [URL: $url METODO: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
         }
 
-        return (self::$settings['json'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse; 
+        return (self::$settings['responseParseJson'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse; 
     }
 
     public static function getLastError(){

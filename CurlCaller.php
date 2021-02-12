@@ -100,11 +100,11 @@ abstract class CurlCaller {
         curl_close($ch);
 
         if(self::$curlError){		
-            throw new Exception("CURL ERROR [URL: $url METODO: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
+            throw new Exception("CURL ERROR [URL: $url METHOD: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
         }
         
         if($httpcode >= 300 || $httpcode == 0){		
-            throw new Exception("HTTP ERROR [URL: $url METODO: $metodo CODE: $httpcode ERROR: ".self::$curlError."]");
+            throw new Exception("HTTP ERROR [URL: $url METHOD: $metodo CODE: $httpcode RESP: ".self::$curlResponse."]");
         }
 
         return (self::$settings['responseParseArray'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse; 

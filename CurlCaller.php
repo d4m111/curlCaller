@@ -24,7 +24,7 @@ abstract class CurlCaller {
         'connectTimeout'        => 3, // seg
         'queryTimeout'          => 30, // seg
         'verbose'               => false,
-        'basicAuth'             => [],
+        'basicAuth'             => ['user' => '', 'password' => ''],
         'headers'               => []
     ];
 
@@ -88,9 +88,9 @@ abstract class CurlCaller {
         
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headersList);
 
-        if(self::$settings['basicAuth'] && is_array(self::$settings['basicAuth'])){
+        if(self::$settings['basicAuth'] && (self::$settings['basicAuth']['user'] || self::$settings['basicAuth']['password'])){
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);     
-            curl_setopt($ch, CURLOPT_USERPWD, self::$settings['basicAuth'][0].':'.self::$settings['basicAuth'][1]);
+            curl_setopt($ch, CURLOPT_USERPWD, self::$settings['basicAuth']['user'].':'.self::$settings['basicAuth']['password']);
         }
 
         self::$curlResponse = curl_exec($ch);

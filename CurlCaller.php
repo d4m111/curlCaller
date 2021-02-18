@@ -13,7 +13,7 @@ abstract class CurlCaller {
     private static $curlResponse;
     private static $settings = [
         'url'                   => '',
-        'paramJson'             => false,
+        'paramToJson'           => false,
         'responseJsonToArray'   => false,
         'acceptCharset'         => 'UTF-8',
         'contentType'           => '', // application/json | application/x-www-form-urlencoded | multipart/form-data
@@ -56,7 +56,7 @@ abstract class CurlCaller {
             CURLOPT_VERBOSE => self::$settings['verbose'],
         ));
 
-        if(self::$settings['paramJson'] !== true && is_array($params)){
+        if(self::$settings['paramToJson'] !== true && is_array($params)){
 
             if(strtoupper($metodo) == 'POST'){
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
@@ -64,9 +64,9 @@ abstract class CurlCaller {
                 curl_setopt($ch, CURLOPT_URL, $url.'?'.http_build_query($params)); // rawurldecode(http_build_query($params)) // si quiero que no encodee las comas etc
             }
 
-        }else if((self::$settings['paramJson'] === true) && is_array($params)){
+        }else if((self::$settings['paramToJson'] === true) && is_array($params)){
 
-            curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, @json_encode($params));
 
         }else if($params){
 

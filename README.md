@@ -5,7 +5,7 @@
 
     CurlCaller::setSettings([
         'url' => 'url',
-        // paramJson' => true,
+        // paramToJson' => true,
         'responseJsonToArray' => true,
         'userAgent' => 'user-agent', 
         'basicAuth' => ['user' => 'user', 'password' => 'pass'],

@@ -31,7 +31,7 @@
 # Raw calls
     $response = CurlCaller::call('/endpoint', 'POST', ['customer' => 1234, 'sataus' => 'active'])
 
-    // var_export($response);
+    // RETURNS:
     // Array(
     //    'url' => 'url/endpoint',
     //    'httpCode' => 200,

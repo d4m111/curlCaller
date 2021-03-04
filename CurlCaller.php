@@ -3,7 +3,7 @@
 /**
 *
 * @author Damián Curcio
-* @version 1.5
+* @version 1.6
 *
 **/
 
@@ -25,7 +25,8 @@ abstract class CurlCaller {
         'queryTimeout'          => 30, // seg
         'verbose'               => false,
         'basicAuth'             => ['user' => '', 'password' => ''],
-        'headers'               => []
+        'headers'               => [],
+        'httpMinErrorCode'      => 300
     ];
 
     public static function setSettings(array $settings){
@@ -97,19 +98,21 @@ abstract class CurlCaller {
         
         self::$curlError = curl_error($ch);
         self::$curlInfo = curl_getinfo($ch);
-        
-        $httpCode = self::$curlInfo['http_code'];
 
         curl_close($ch);
+        
+        $httpCode = self::$curlInfo['http_code'];
 
         if(self::$curlError){		
             throw new Exception("CURL ERROR [URL: $url METHOD: $metodo CODE: $httpCode ERROR: ".self::$curlError."]");
         }
+
+        $httpMinErrorCode = (is_numeric(self::$settings['httpMinErrorCode'])) ? self::$settings['httpMinErrorCode'] : 300;
         
         return [
             'url' => $url,
             'httpCode' => $httpCode,
-            'responseType' => ($httpCode < 300) ? 'success' : 'error',
+            'responseType' => ($httpCode < $httpMinErrorCode) ? 'success' : 'error',
             'response' => (self::$settings['responseJsonToArray'] === true) ? @json_decode(self::$curlResponse,true) : self::$curlResponse        
         ]; 
     }
@@ -122,47 +125,47 @@ abstract class CurlCaller {
         return self::$curlInfo;
     }
 
-    public static function get(string $url, $params = null){
+    public static function get(string $url, $params = null, array $acceptedErrorCodes = []){
         
         $r = self::call($url, 'GET', $params);
 
-        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: GET CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: GET CODE: {$r['httpCode']} RESP: {$r['response']}]");
 
         return $r['response'];
     }
 
-    public static function post(string $url, $params = null){
+    public static function post(string $url, $params = null, array $acceptedErrorCodes = []){
 
         $r = self::call($url, 'POST', $params);
 
-        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: POST CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: POST CODE: {$r['httpCode']} RESP: {$r['response']}]");
 
         return $r['response'];
     }
 
-    public static function put(string $url, $params = null){
+    public static function put(string $url, $params = null, array $acceptedErrorCodes = []){
 
         $r = self::call($url, 'PUT', $params);
 
-        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PUT CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PUT CODE: {$r['httpCode']} RESP: {$r['response']}]");
 
         return $r['response'];
     }
 
-    public static function patch(string $url, $params = null){
+    public static function patch(string $url, $params = null, array $acceptedErrorCodes = []){
 
         $r = self::call($url, 'PATCH', $params);
 
-        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PATCH CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PATCH CODE: {$r['httpCode']} RESP: {$r['response']}]");
 
         return $r['response'];
     }
 
-    public static function delete(string $url, $params = null){
+    public static function delete(string $url, $params = null, array $acceptedErrorCodes = []){
 
         $r = self::call($url, 'DELETE', $params);
 
-        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: DELETE CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: DELETE CODE: {$r['httpCode']} RESP: {$r['response']}]");
 
         return $r['response'];
     }

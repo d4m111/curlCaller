@@ -125,7 +125,7 @@ abstract class CurlCaller {
         return self::$curlInfo;
     }
 
-    public static function get(string $url, $params = null, bool $ignoreNotFoundError = true){
+    public static function get(string $url, $params = null, bool $ignoreNotFoundError = false){
         
         $r = self::call($url, 'GET', $params);
 

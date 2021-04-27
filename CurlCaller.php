@@ -129,7 +129,11 @@ abstract class CurlCaller {
         
         $r = self::call($url, 'GET', $params);
 
-        if($r['responseType'] == 'error' && !($ignoreNotFoundError && $r['httpCode'] == 404)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: GET CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error' && !($ignoreNotFoundError && $r['httpCode'] == 404)){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: GET CODE: {$r['httpCode']} RESP: $resp ]");
+        } 
 
         return $r['response'];
     }
@@ -138,7 +142,11 @@ abstract class CurlCaller {
 
         $r = self::call($url, 'POST', $params);
 
-        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: POST CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error'){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: POST CODE: {$r['httpCode']} RESP: $resp ]");
+        }
 
         return $r['response'];
     }
@@ -147,7 +155,11 @@ abstract class CurlCaller {
 
         $r = self::call($url, 'PUT', $params);
 
-        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PUT CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error'){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: POST CODE: {$r['httpCode']} RESP: $resp ]");
+        }
 
         return $r['response'];
     }
@@ -156,7 +168,11 @@ abstract class CurlCaller {
 
         $r = self::call($url, 'PATCH', $params);
 
-        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PATCH CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error'){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PATCH CODE: {$r['httpCode']} RESP: $resp ]");
+        }
 
         return $r['response'];
     }
@@ -165,7 +181,11 @@ abstract class CurlCaller {
 
         $r = self::call($url, 'DELETE', $params);
 
-        if($r['responseType'] == 'error') throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: DELETE CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error'){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: DELETE CODE: {$r['httpCode']} RESP: $resp ]");
+        }
 
         return $r['response'];
     }

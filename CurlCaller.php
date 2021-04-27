@@ -3,7 +3,7 @@
 /**
 *
 * @author Damián Curcio
-* @version 1.6
+* @version 1.7
 *
 **/
 
@@ -125,11 +125,11 @@ abstract class CurlCaller {
         return self::$curlInfo;
     }
 
-    public static function get(string $url, $params = null, bool $catchNotFoundError = true){
+    public static function get(string $url, $params = null, bool $ignoreNotFoundError = true){
         
         $r = self::call($url, 'GET', $params);
 
-        if($r['responseType'] == 'error' && !($catchNotFoundError && $r['httpCode'] == 404)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: GET CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error' && !($ignoreNotFoundError && $r['httpCode'] == 404)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: GET CODE: {$r['httpCode']} RESP: {$r['response']}]");
 
         return $r['response'];
     }

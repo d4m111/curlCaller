@@ -3,7 +3,7 @@
 /**
 *
 * @author Damián Curcio
-* @version 1.7
+* @version 1.8
 *
 **/
 
@@ -85,7 +85,11 @@ abstract class CurlCaller {
         if(self::$settings['userAgent']) $headersList[] = "User-Agent: ".self::$settings['userAgent'];
         if(self::$settings['contentType']) $headersList[] = "Content-Type: ".self::$settings['contentType'];
 
-        $headersList += self::$settings['headers'];
+        if(is_array(self::$settings['headers'])){
+            foreach(self::$settings['headers'] as $v){
+                $headersList[] = $v;
+            }  
+        }
         
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headersList);
 

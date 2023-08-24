@@ -3,7 +3,7 @@
 /**
 *
 * @author Damián Curcio
-* @version 1.6
+* @version 1.8
 *
 **/
 
@@ -85,7 +85,11 @@ abstract class CurlCaller {
         if(self::$settings['userAgent']) $headersList[] = "User-Agent: ".self::$settings['userAgent'];
         if(self::$settings['contentType']) $headersList[] = "Content-Type: ".self::$settings['contentType'];
 
-        $headersList += self::$settings['headers'];
+        if(is_array(self::$settings['headers'])){
+            foreach(self::$settings['headers'] as $v){
+                $headersList[] = $v;
+            }  
+        }
         
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headersList);
 
@@ -125,47 +129,67 @@ abstract class CurlCaller {
         return self::$curlInfo;
     }
 
-    public static function get(string $url, $params = null, array $acceptedErrorCodes = []){
+    public static function get(string $url, $params = null, bool $ignoreNotFoundError = false){
         
         $r = self::call($url, 'GET', $params);
 
-        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: GET CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error' && !($ignoreNotFoundError && $r['httpCode'] == 404)){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: GET CODE: {$r['httpCode']} RESP: $resp ]");
+        } 
 
         return $r['response'];
     }
 
-    public static function post(string $url, $params = null, array $acceptedErrorCodes = []){
+    public static function post(string $url, $params = null){
 
         $r = self::call($url, 'POST', $params);
 
-        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: POST CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error'){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: POST CODE: {$r['httpCode']} RESP: $resp ]");
+        }
 
         return $r['response'];
     }
 
-    public static function put(string $url, $params = null, array $acceptedErrorCodes = []){
+    public static function put(string $url, $params = null){
 
         $r = self::call($url, 'PUT', $params);
 
-        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PUT CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error'){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: POST CODE: {$r['httpCode']} RESP: $resp ]");
+        }
 
         return $r['response'];
     }
 
-    public static function patch(string $url, $params = null, array $acceptedErrorCodes = []){
+    public static function patch(string $url, $params = null){
 
         $r = self::call($url, 'PATCH', $params);
 
-        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PATCH CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error'){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: PATCH CODE: {$r['httpCode']} RESP: $resp ]");
+        }
 
         return $r['response'];
     }
 
-    public static function delete(string $url, $params = null, array $acceptedErrorCodes = []){
+    public static function delete(string $url, $params = null){
 
         $r = self::call($url, 'DELETE', $params);
 
-        if($r['responseType'] == 'error' && !in_array($r['httpCode'], $acceptedErrorCodes)) throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: DELETE CODE: {$r['httpCode']} RESP: {$r['response']}]");
+        if($r['responseType'] == 'error'){
+            $resp = (is_array($r['response'])) ? json_encode($r['response']) : $r['response'];
+
+            throw new Exception("HTTP ERROR [URL: {$r['url']} METHOD: DELETE CODE: {$r['httpCode']} RESP: $resp ]");
+        }
 
         return $r['response'];
     }
